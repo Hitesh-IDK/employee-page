@@ -64,9 +64,9 @@
 
 .search_bar {
     display: flex;
-    background-color: rgba(255, 228, 196, 0.8);
+    background-color: rgba(255, 228, 196, 0.534);
     width: 30vw;
-    height: 3.4vh;
+    height: 3.7vh;
     border-radius: 10px;
 }
 
@@ -76,5 +76,5 @@
     width: 70%;
     outline: none;
     margin-left: 30px;
-    color: black;
+    color: rgb(0, 0, 0);
 }

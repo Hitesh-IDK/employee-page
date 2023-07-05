@@ -1,0 +1,19 @@
+.navBar {
+    display: flex;
+    list-style: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.548);
+    background-color: rgba(61, 61, 61, 0.158);
+}
+
+.element {
+    padding-right: 2vw;
+    padding-left: 2vw;
+    padding-top: 2.8vh;
+    padding-bottom: 2.6vh;
+    font-size: 120%;
+    border-right: 1px solid rgba(255, 255, 255, 0.664);
+}
+
+.element:hover {
+    background-color: rgba(240, 248, 255, 0.089);
+}

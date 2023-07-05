@@ -3,20 +3,23 @@ import Image from 'next/image';
 import Link from 'next/link';
 import searchImg from '../public/searchImg.png';
 import homeCss from '../styles/homepage.module.css';
+import NavBar from '@/components/NavBar';
 
 export default function Home() {
   return (
     <>
       <Head>
-        <title>Home Page</title>
+        <title>Employee Data</title>
         <meta name="description" content="Interface to connect to the database of employee data" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
+      <NavBar page='home'/>
+
       <div>
         <div className={homeCss.title_container}>
-          <div className={[homeCss.title]} >employee . data</div>
+          <h1 className={[homeCss.title]} >employee . data</h1>
           <Link href='./employee'><Image src={searchImg} alt='Search image' className={homeCss.search_img} /></Link>
         </div>
         <div className={homeCss.stats_container}>

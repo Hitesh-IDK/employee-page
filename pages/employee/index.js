@@ -15,23 +15,9 @@ export default function employeeIndex() {
     }
 
     const enterHandler = async (event) => {
-        if (event.key !== 'Enter') {
-            return;
+        if (event.key === 'Enter') {
+            router.push(`/employee/${emplyInput.trim().toLowerCase()}`);
         }
-
-        const response = await fetch('https://employee-data-31b57-default-rtdb.asia-southeast1.firebasedatabase.app/employee.json');
-        const data = await response.json();
-        console.log(data);
-
-        for(const key in data) {
-            console.log(key);
-            console.log(data[key].name);
-            if(data[key].name.toLowerCase() === emplyInput.toLowerCase()) {
-                router.push(`/employee/${emplyInput.trim().toLowerCase()}`);
-            }
-        }
-
-        
     }
 
     return (

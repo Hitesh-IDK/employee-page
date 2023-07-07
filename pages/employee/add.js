@@ -4,6 +4,7 @@ import addCss from '../../styles/add.module.css';
 import InputCard from "@/components/InputCard";
 import { useState } from "react";
 import ToolTip from "@/components/ToolTip";
+import { resolve } from "styled-jsx/css";
 
 export default function add() {
 
@@ -42,13 +43,20 @@ export default function add() {
             entryDate: new Date()
         };
 
-        await fetch('https://employee-data-31b57-default-rtdb.asia-southeast1.firebasedatabase.app/employee.json', {
+        await fetch('/api/data', {
             method: 'POST',
-            body: JSON.stringify(inputData),
+            body: JSON.stringify({ destination: 'hybrid', data: { ...inputData }}),
             headers: {
-                'Content-type': 'application/json; charset=UTF-8',
-            },
-        });
+                'Content-type': 'application/json'
+            }
+        })
+        // await fetch('https://employee-data-31b57-default-rtdb.asia-southeast1.firebasedatabase.app/employee.json', {
+        //     method: 'POST',
+        //     body: JSON.stringify(inputData),
+        //     headers: {
+        //         'Content-type': 'application/json; charset=UTF-8',
+        //     },
+        // });
 
         setInputName('');
         setInputDate('');

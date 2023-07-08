@@ -4,33 +4,34 @@ import addCss from '../../styles/add.module.css';
 import InputCard from "@/components/InputCard";
 import { useState } from "react";
 import ToolTip from "@/components/ToolTip";
-import { resolve } from "styled-jsx/css";
 
-export default function add() {
-
-    const [validName, setValidName] = useState(true);
-    const [validSalary, setValidSalary] = useState(true);
-
+export default function Add() {
+    const [isNameValid, setIsNameValid] = useState(true);
+    const [isSalaryValid, setIsSalaryValid] = useState(true);
     const [inputName, setInputName] = useState('');
     const [inputSalary, setInputSalary] = useState('');
     const [inputDate, setInputDate] = useState('');
 
-    const submitHandler = async (event) => {
-        event.preventDefault();
-
-        let valid = true;
+    const validateForm = () => {
+        let isValid = true;
 
         if (inputName.trim().length === 0) {
-            setValidName(false);
-            valid = false;
+            setIsNameValid(false);
+            isValid = false;
         }
 
         if (inputSalary <= 0 || inputSalary >= 1000000000) {
-            setValidSalary(false);
-            valid = false;
+            setIsSalaryValid(false);
+            isValid = false;
         }
 
-        if (!valid) {
+        return isValid;
+    };
+
+    const submitHandler = async (event) => {
+        event.preventDefault();
+
+        if (!validateForm()) {
             return;
         }
 
@@ -43,39 +44,40 @@ export default function add() {
             entryDate: new Date()
         };
 
-        await fetch('/api/data', {
-            method: 'POST',
-            body: JSON.stringify({ destination: 'hybrid', data: { ...inputData }}),
-            headers: {
-                'Content-type': 'application/json'
-            }
-        })
-        // await fetch('https://employee-data-31b57-default-rtdb.asia-southeast1.firebasedatabase.app/employee.json', {
-        //     method: 'POST',
-        //     body: JSON.stringify(inputData),
-        //     headers: {
-        //         'Content-type': 'application/json; charset=UTF-8',
-        //     },
-        // });
+        try {
+            const response = await fetch('/api/data', {
+                method: 'POST',
+                body: JSON.stringify({ destination: 'hybrid', data: { ...inputData }}),
+                headers: {
+                    'Content-type': 'application/json'
+                }
+            });
 
-        setInputName('');
-        setInputDate('');
-        setInputSalary('');
-    }
+            if (response.ok) {
+                setInputName('');
+                setInputDate('');
+                setInputSalary('');
+            } else {
+                // Handle server-side errors or other non-successful responses
+            }
+        } catch (error) {
+            // Handle network errors
+        }
+    };
 
     const nameHandler = (event) => {
-        setValidName(true);
+        setIsNameValid(true);
         setInputName(event.target.value);
-    }
+    };
 
     const salaryHandler = (event) => {
-        setValidSalary(true);
+        setIsSalaryValid(true);
         setInputSalary(event.target.value.trim());
-    }
+    };
 
     const dateHandler = (event) => {
         setInputDate(event.target.value);
-    }
+    };
 
     return (
         <>
@@ -93,13 +95,19 @@ export default function add() {
                     <h1 className={addCss.add_title}>Employee Data</h1>
                     <form onSubmit={submitHandler} className={addCss.form__container}>
                         <label className={addCss.labelStyle}>Name</label>
-                        <InputCard><input onChange={nameHandler} value={inputName} className={addCss.input_name} /></InputCard>
-                        {!validName && <ToolTip content='Invalid Name!' />}
+                        <InputCard>
+                            <input onChange={nameHandler} value={inputName} className={addCss.input_name} />
+                        </InputCard>
+                        {!isNameValid && <ToolTip content='Invalid Name!' />}
                         <label className={addCss.labelStyle}>Salary</label>
-                        <InputCard><input type="number" onChange={salaryHandler} value={inputSalary} className={addCss.input_number} /></InputCard>
-                        {!validSalary && <ToolTip content='Invalid Salary!' />}
+                        <InputCard>
+                            <input type="number" onChange={salaryHandler} value={inputSalary} className={addCss.input_number} />
+                        </InputCard>
+                        {!isSalaryValid && <ToolTip content='Invalid Salary!' />}
                         <label className={addCss.labelStyle}>Hired On</label>
-                        <InputCard><input type="date" onChange={dateHandler} value={inputDate} className={addCss.input_date} /></InputCard>
+                        <InputCard>
+                            <input type="date" onChange={dateHandler} value={inputDate} className={addCss.input_date} />
+                        </InputCard>
                         <button type="submit" className={addCss.submit} >Submit</button>
                     </form>
                 </div>

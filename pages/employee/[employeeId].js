@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import emplyCss from '../../styles/employee.module.css';
 import { buildDataPath, extractData } from '../api/data';
 import { useEffect, useState } from 'react';
+import NavBar from '@/components/NavBar';
 
 const EmployeeData = (props) => {
     const router = useRouter();
@@ -31,34 +32,43 @@ const EmployeeData = (props) => {
             method: 'DELETE'
         })
 
-        console.log(`/api/${data.name.toLowerCase()}`);
-        console.log(response.status);
-
         if (response.status === 200) {
 
             setDeleted(true);
-            console.log('Delete detected!');
         }
     }
 
     return (
-        <div className={emplyCss.main__container} >
-            <div className={emplyCss.sub__container}>
-                <h1 className={emplyCss.title} >Employee Data</h1>
-                <div>
-                    {dataExists && !deleted && <label className={emplyCss.labels}>Name</label>}
-                    {dataExists && !deleted && <p className={emplyCss.data}>{data.name}</p>}
-                    {dataExists && !deleted && <label className={emplyCss.labels}>Salary</label>}
-                    {dataExists && !deleted && <p className={emplyCss.data}>{data.salary}</p>}
-                    {dataExists && !deleted && <label className={emplyCss.labels}>Hired On</label>}
-                    {dataExists && !deleted && <p className={emplyCss.data}>{data.hiredOn}</p>}
-                    {!dataExists && !deleted && <p className={emplyCss.labels}>Data not found!</p>}
-                    {deleted && <p className={emplyCss.labels}>Deleted employee data successfully!</p>}
+        <>
+            <NavBar />
+            <div className={emplyCss.main__container}>
+                <div className={emplyCss.sub__container}>
+                    <h1 className={emplyCss.title}>Employee Data</h1>
+                    {dataExists && !deleted ? (
+                        <>
+                            <label className={emplyCss.labels}>Name</label>
+                            <p className={emplyCss.data}>{data.name}</p>
+                            <label className={emplyCss.labels}>Salary</label>
+                            <p className={emplyCss.data}>{data.salary}</p>
+                            <label className={emplyCss.labels}>Hired On</label>
+                            <p className={emplyCss.data}>{data.hiredOn}</p>
+                        </>
+                    ) : (
+                        <p className={emplyCss.labels}>
+                            {deleted ? "Deleted employee data successfully!" : "Data not found!"}
+                        </p>
+                    )}
+                    <button onClick={homeHandler} className={emplyCss.home}>
+                        Home
+                    </button>
+                    {dataExists && !deleted && (
+                        <button onClick={deleteHandler} className={emplyCss.delete}>
+                            Delete
+                        </button>
+                    )}
                 </div>
-                <button onClick={homeHandler} className={emplyCss.home}>Home</button>
-                {dataExists && !deleted && <button onClick={deleteHandler} className={emplyCss.delete}>Delete</button>}
             </div>
-        </div>
+        </>
     );
 }
 
@@ -69,7 +79,6 @@ export async function getServerSideProps(context) {
 
     const filePath = buildDataPath();
     const data = extractData(filePath);
-    console.log(data);
 
     for (const i in data) {
         if (data[i].name.toLowerCase() === params.employeeId) {
@@ -84,8 +93,7 @@ export async function getServerSideProps(context) {
 
     return {
         props: {
-            params: params,
-            // data: data
+            params: params
         }
     };
 }

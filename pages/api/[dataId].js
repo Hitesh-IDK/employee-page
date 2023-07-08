@@ -6,9 +6,6 @@ function handler(req, res) {
     const filePath = buildDataPath();
     const data = extractData(filePath);
 
-    console.log(data);
-    console.log(dataId);
-
     if (req.method === 'DELETE') {
         const filteredData = data.filter((item) => {
             if (item.name.toLowerCase() !== dataId)

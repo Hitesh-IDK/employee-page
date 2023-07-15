@@ -6,13 +6,21 @@ export function buildDataPath() {
     return path.join(process.cwd(), 'data', 'emplyData.json');
 }
 
-export function extractData(filePath) {
-    const readData = fs.readFileSync(filePath);
-    const data = JSON.parse(readData);
-    return data;
+export async function extractData(filePath, source=' ') {
+
+    if(source === 'remote') {
+        const response = await fetch(`${process.env.APIURL}.json`);
+        const data = await response.json();
+        return data;
+    }
+    else {
+        const readData = fs.readFileSync(filePath);
+        const data = JSON.parse(readData);
+        return data;
+    }
 }
 
-function handler(req, res) {
+async function handler(req, res) {
     if (req.method === 'POST') {
         const data = req.body.data;
         const destination = req.body.destination;
@@ -20,7 +28,7 @@ function handler(req, res) {
         if (destination === 'local') {
             //store the data in a local file
             const filePath = buildDataPath();
-            const fileData = extractData(filePath);
+            const fileData = await extractData(filePath, 'remote');
 
             fileData.push(data);
             fs.writeFileSync(filePath, JSON.stringify(fileData));
@@ -28,7 +36,7 @@ function handler(req, res) {
         }
         else if (destination === 'remote') {
             //store the data on a remote database
-            fetch(process.env.APIURL, {
+            fetch(`${process.env.APIURL}.json`, {
                 method: 'POST',
                 body: JSON.stringify(data),
                 headers: {
@@ -40,13 +48,13 @@ function handler(req, res) {
         else if (destination === 'hybrid') {
             //store the data in a local file
             const filePath = buildDataPath();
-            const fileData = extractData(filePath);
+            const fileData = await extractData(filePath);
 
             fileData.push(data);
             fs.writeFileSync(filePath, JSON.stringify(fileData));
 
             //store the data on a remote database
-            fetch(process.env.APIURL, {
+            const response = await fetch(`${process.env.APIURL}.json`, {
                 method: 'POST',
                 body: JSON.stringify(data),
                 headers: {
@@ -54,33 +62,18 @@ function handler(req, res) {
                 },
             });
 
-            res.status(200).json('Success!');
+            res.status(200).json({message: 'Successfully added!'});
         }
         else {
-            res.status(502).json({ feedback: 'Invalid Destination Specified!', data: data });
+            res.status(502).json({ message: 'Invalid Destination Specified!', data: data });
             return;
         }
 
         // //sending a response once data has been stored\        res.status(201).json({ feedback: 'Success', data: data });
     }
-    else if (req.method === 'DELETE') {
-        const filePath = buildDataPath();
-        const data = extractData(filePath);
-        const delData = req.body.delData;
-
-        console.log(delData);
-        console.log(data);
-
-        const filteredData = data.filter((item) => {
-            item.name !== delData.name;
-        })
-
-        fs.writeFileSync(filePath, JSON.stringify(filteredData));
-        res.status(200).json({feedback: 'Success'});
-    }
     else {
         const filePath = buildDataPath();
-        const data = extractData(filePath);
+        const data = await extractData(filePath, 'remote');
 
         res.status(200).json({ emplyData: data });
     }

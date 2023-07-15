@@ -5,3 +5,7 @@
     height: 4vh;
     margin-top: 1vh;
 }
+
+.invalid {
+    background-color: rgb(250, 66, 66);
+}

@@ -3,11 +3,14 @@ import emplyCss from '../../styles/employee.module.css';
 import { buildDataPath, extractData } from '../api/data';
 import { useEffect, useState } from 'react';
 import NavBar from '@/components/NavBar';
+import { useSession } from 'next-auth/react';
+import { connectToDatabase } from '@/helpers/auth/auth-db';
 
 const EmployeeData = (props) => {
     const router = useRouter();
     const [dataExists, setDataExists] = useState();
     const [deleted, setDeleted] = useState(false);
+    const { data: session } = useSession();
 
     const data = props.data;
 
@@ -25,8 +28,10 @@ const EmployeeData = (props) => {
     }
 
     const deleteHandler = async () => {
-        // const reqData = JSON.stringify(data);
-        // console.log(reqData);
+
+        if (!session) {
+            return;
+        }
 
         const response = await fetch(`/api/${data.name.toLowerCase()}`, {
             method: 'DELETE'
@@ -78,10 +83,39 @@ export async function getServerSideProps(context) {
     const { params } = context;
 
     const filePath = buildDataPath();
-    const data = extractData(filePath);
+    const data = await extractData(filePath, 'remote');
+
+    if (data.error)
+        return {
+            props: {
+                params: params
+            }
+        }
 
     for (const i in data) {
         if (data[i].name.toLowerCase() === params.employeeId) {
+            const client = await connectToDatabase();
+            const queries = client.db().collection('queries');
+            let queryPlus;
+
+            const employee = await queries.findOne({ id: i });
+            
+            if(employee) {
+                queryPlus = employee.queryCount + 1;
+                await queries.updateOne({ id: i }, { $set: { name: data[i].name, queryCount: queryPlus } });
+            }
+            else {
+                queryPlus = 1;
+                const queryData = {
+                    id: i,
+                    name: data[i].name,
+                    queryCount: queryPlus
+                }
+                await queries.insertOne(queryData);
+            }
+
+            client.close();
+            
             return {
                 props: {
                     params: params,

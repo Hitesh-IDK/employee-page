@@ -48,3 +48,19 @@
   color: cyan;
   cursor: pointer;
 }
+
+.submit {
+  margin-top: 1vh;
+  width: 10vw;
+  height: 3vh;
+  background-color: cadetblue;
+  border: 1px solid rgb(60, 102, 104);
+}
+
+.submit:hover {
+  background-color: rgb(132, 189, 190);
+}
+
+.invalid_field {
+  background-color: rgba(236, 26, 26, 0.281) !important;
+}

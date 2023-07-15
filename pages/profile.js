@@ -10,8 +10,6 @@ import InputCard from '@/components/InputCard';
 export default function Profile(props) {
     const [isChanging, setIsChanging] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
-    const [isOldInvalid, setIsOldInvalid] = useState(false);
-    const [isNewInvalid, setIsNewInvalid] = useState(false);
 
     const oldPasswordRef = useRef();
     const newPasswordRef = useRef();
@@ -64,8 +62,9 @@ export default function Profile(props) {
     }
 
     useEffect(() => {
-        if (!session)
+        if (!session){
             router.push('/');
+        }
         else {
             setIsLoading(false);
         }
@@ -84,7 +83,6 @@ export default function Profile(props) {
 
     return (
         <>
-
             <div className={profCss.main__container}>
                 <div className={profCss.sub__container}>
                     <h1 className={profCss.title}>Profile</h1>
@@ -104,9 +102,9 @@ export default function Profile(props) {
                     {isChanging ? (
                         <>
                             <label className={profCss.passwords}>Old Password</label>
-                            <InputCard isInvalid={isOldInvalid} ><input type='password' ref={oldPasswordRef} className={profCss.inputs}></input></InputCard>
+                            <InputCard isInvalid={false} ><input type='password' ref={oldPasswordRef} className={profCss.inputs}></input></InputCard>
                             <label className={profCss.passwords}>New Password</label>
-                            <InputCard isInvalid={isNewInvalid}><input type='password' ref={newPasswordRef} className={profCss.inputs}></input></InputCard>
+                            <InputCard isInvalid={false}><input type='password' ref={newPasswordRef} className={profCss.inputs}></input></InputCard>
                             <div className={profCss.change_container}>
                                 <button onClick={passwordHandler} className={profCss.confirm}>Confirm</button>
                                 <button onClick={cancelHandler} className={profCss.cancel}>Cancel</button>
@@ -126,6 +124,7 @@ export async function getServerSideProps(context) {
     const session = JSON.parse(JSON.stringify(await getServerSession(context.req, context.res)));
 
     if (!session) {
+        console.log(session);
         return {
             redirect: {
                 destination: '/',

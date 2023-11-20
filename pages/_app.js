@@ -1,5 +1,7 @@
+import ContextProviders from '@/components/layout/context-provider';
 import Layout from '@/components/layout/layout'
 import PageLoader from '@/components/ui/PageLoader';
+import { PageContextProvider } from '@/contexts/page-context';
 import '@/styles/globals.css'
 import { SessionProvider } from 'next-auth/react';
 import Router, { useRouter } from "next/router";
@@ -31,16 +33,18 @@ export default function App({ Component, pageProps: { session, ...pageProps } })
   }, []);
   return (
     <SessionProvider session={session}>
-      {loading ? (
-        <div className='pageloader'>
-          <PageLoader />
-        </div>
-      ) : (
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
+      <ContextProviders>
+        {loading ? (
+          <div className='pageloader'>
+            <PageLoader />
+          </div>
+        ) : (
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
 
-      )}
+        )}
+      </ContextProviders>
     </SessionProvider>
   );
 }

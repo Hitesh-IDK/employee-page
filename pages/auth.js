@@ -1,10 +1,11 @@
 import AuthForm from "@/components/AuthForm";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { signIn, useSession } from 'next-auth/react'
 import { useRouter } from "next/router";
 import Loading from "@/components/ui/Loading";
 import authCss from '../styles/auth.module.css'
 import { getServerSession } from "next-auth";
+import NotificationContext from "@/contexts/notif-context";
 
 export default function Auth() {
 
@@ -12,6 +13,7 @@ export default function Auth() {
     const [isLoading, setIsLoading] = useState(false);
     const { data: session } = useSession();
     const [accountExists, setAccountExists] = useState(true);
+    const { notification, showNotification, hideNotification } = useContext(NotificationContext);
 
     useEffect(() => { }, [accountExists]);
 
@@ -27,8 +29,24 @@ export default function Auth() {
 
         setIsLoading(false);
 
-        if(!response.ok) {
-            setAccountExists(false);
+        if (!response.ok) {
+            const notification = {
+                content: response.error,
+                status: 'error'
+            }
+
+            showNotification(notification);
+            if (!(response.error === 'Password Incorrect!')) {
+                setAccountExists(false);
+            }
+        }
+        else {
+            const notification = {
+                content: 'Logged in Successfully!',
+                status: 'success'
+            }
+
+            showNotification(notification);
         }
     }
 
@@ -49,7 +67,24 @@ export default function Auth() {
         setIsLoading(false);
 
         if (!response.ok) {
-            setAccountExists(true);
+            const data = await response.json();
+            const notification = {
+                content: data.message,
+                status: 'error'
+            }
+
+            showNotification(notification);
+            if (data.message === 'User already exists!') {
+                setAccountExists(true);
+            }
+        }
+        else {
+            const notification = {
+                content: 'Sign Up Successful!',
+                status: 'success'
+            }
+
+            showNotification(notification);
         }
     }
 

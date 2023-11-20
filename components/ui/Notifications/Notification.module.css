@@ -1,0 +1,16 @@
+.main_container {
+  position: absolute;
+  left: 1rem;
+  top: 6rem;
+}
+
+@keyframes floatInFromLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

@@ -6,9 +6,9 @@ export function buildDataPath() {
     return path.join(process.cwd(), 'data', 'emplyData.json');
 }
 
-export async function extractData(filePath, source=' ') {
+export async function extractData(filePath, source = ' ') {
 
-    if(source === 'remote') {
+    if (source === 'remote') {
         const response = await fetch(`${process.env.APIURL}.json`);
         const data = await response.json();
         return data;
@@ -62,7 +62,7 @@ async function handler(req, res) {
                 },
             });
 
-            res.status(200).json({message: 'Successfully added!'});
+            res.status(200).json({ message: 'Successfully added!' });
         }
         else {
             res.status(502).json({ message: 'Invalid Destination Specified!', data: data });

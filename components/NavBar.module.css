@@ -1,18 +1,21 @@
 .navBar {
   display: flex;
+  background-color: #865dff;
+  justify-content: space-between;
+}
+
+.navStrip {
+  display: flex;
   list-style: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.548);
-  background-color: rgba(61, 61, 61, 0.158);
   justify-content: space-between;
 }
 
 .element {
   padding-right: 2vw;
   padding-left: 2vw;
-  padding-top: 2.8vh;
+  padding-top: 3vh;
   padding-bottom: 2.6vh;
   font-size: 120%;
-  border-right: 1px solid rgba(109, 109, 109, 0.664);
 }
 
 .element:hover {
@@ -21,18 +24,18 @@
 }
 
 .active_element {
-  background-color: rgba(109, 109, 109, 0.664) !important;
+  background-color: #734aee !important;
   color: white !important;
 }
 
 .auth {
   padding-right: 2vw;
   padding-left: 2vw;
-  padding-top: 2.8vh;
+  padding-top: 3vh;
   padding-bottom: 2.6vh;
   font-size: 120%;
   border-right: 1px solid rgba(109, 109, 109, 0.664);
-  background-color: rgb(78, 172, 101);
+  background-color: #84bdff;
 }
 
 .auth:hover {

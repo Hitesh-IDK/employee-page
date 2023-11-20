@@ -4,11 +4,73 @@ import Link from 'next/link';
 import searchImg from '../public/searchImg.png';
 import homeCss from '../styles/homepage.module.css';
 import NavBar from '@/components/NavBar';
-import Loading from '@/components/ui/Loading';
-import { extractData } from './api/data';
-import { connectToDatabase } from '@/helpers/auth/auth-db';
+import { useContext, useEffect, useState } from 'react';
+import Stats from '@/components/stats/stats';
+import PageContext from '@/contexts/page-context';
+// import { extractData } from './api/data';
+// import { connectToDatabase } from '@/helpers/auth/auth-db';
 
 export default function Home(props) {
+
+  const [homeData, setHomeData] = useState({ emplyCount: 0, queryCount: 0 });
+  const [queryCount, setQueryCount] = useState(0);
+  const [emplyCount, setEmplyCount] = useState(0);
+  const pageCtx = useContext(PageContext);
+
+  const getHomeData = async () => {
+    try {
+      const response = await fetch('/api/home-data');
+      const resData = await response.json();
+      const data = resData.data;
+
+      const homeData = {
+        emplyCount: data.emplyCount,
+        queryCount: data.queryCount
+      }
+
+      setHomeData(homeData);
+    }
+    catch (error) {
+      const homeData = {
+        emplyCount: ' - ',
+        queryCount: ' - '
+      }
+      setHomeData(homeData);
+    }
+  }
+
+  const startCounter = async () => {
+    let query = homeData.queryCount;
+    let employee = homeData.emplyCount;
+
+    console.log('Starting Counter');
+
+    while (query !== 0 || employee !== 0) {
+      console.log('Looping');
+      if (query > 0) {
+        console.log(query + ' Query');
+        setQueryCount((prevCount) => {
+          return prevCount++;
+        })
+        query--;
+      }
+
+      if (employee > 0) {
+        console.log(employee + ' Employee');
+        setEmplyCount((prevCount) => {
+          return prevCount++;
+        })
+        employee--;
+      }
+    }
+  }
+
+  useEffect(() => {
+    getHomeData();
+    // startCounter();
+
+    pageCtx.setPageContext('home');
+  }, []);
 
   return (
     <>
@@ -19,48 +81,64 @@ export default function Home(props) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <NavBar page='home' />
-
-      <div>
-        <div className={homeCss.title_container}>
-          <h1 className={[homeCss.title]} >employee . data</h1>
-          <Link href='./employee'><Image src={searchImg} alt='Search image' className={homeCss.search_img} /></Link>
-        </div>
-        <div className={homeCss.stats_container}>
-          <div className={homeCss.stats_each__container}><div className={homeCss.stats__count}>Employee Count</div><div >{props.emplyCount}</div></div>
-          <div className={homeCss.stats_each__container}><div className={homeCss.stats__query}>Total Queries</div><div >{props.queryCount}</div></div>
-          <div className={homeCss.stats_each__container}><div className={homeCss.stats__amount}>Amount Paid</div><div >39008$</div></div>
-        </div>
+      <div className={homeCss.title_container}>
+        <h1 className={[homeCss.title]} >employee . data</h1>
+        <Link href='./employee'><Image src={searchImg} alt='Search image' className={homeCss.search_img} /></Link>
       </div>
+
+      <Stats data={homeData} />
     </>
   )
 }
 
-export async function getServerSideProps(context) {
+// export async function getServerSideProps(context) {
 
-  const data = await extractData('', 'remote');
-  let count = 0;
-  for (const i in data)
-    count++;
+  // let client;
+  // try {
+  //   client = await connectToDatabase();
+  // }
+  // catch (error) {
+  //   return {
+  //     props: {
+  //       emplyCount: ' - ',
+  //       queryCount: ' - '
+  //     }
+  //   }
+  // }
 
-  const client = await connectToDatabase();
-  const queries = client.db().collection('queries');
+  // try {
+  //   const data = await extractData('', 'remote');
+  //   let count = 0;
+  //   for (const i in data)
+  //     count++;
 
-  const queryData = await queries.find().toArray();
+  //   const queries = client.db().collection('queries');
+  //   const queryData = await queries.find().toArray();
 
-  let queryCount = 0;
+  //   let queryCount = 0;
 
-  if (queryData) {
-    for (const i in queryData) {
-      queryCount += queryData[i].queryCount;
-    }
-  }
+  //   if (queryData) {
+  //     for (const i in queryData) {
+  //       queryCount += queryData[i].queryCount;
+  //     }
+  //   }
 
-  client.close();
-  return {
-    props: {
-      emplyCount: count,
-      queryCount
-    }
-  }
-}
+  //   client.close();
+  //   return {
+  //     props: {
+  //       emplyCount: count,
+  //       queryCount
+  //     }
+  //   }
+  // }
+
+  // catch (error) {
+  //   client.close();
+  //   return {
+  //     props: {
+  //       emplyCount: ' - ',
+  //       queryCount: ' - '
+  //     }
+  //   }
+  // }
+// }

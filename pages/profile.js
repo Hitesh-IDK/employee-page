@@ -2,14 +2,19 @@ import { getSession, signOut, useSession } from 'next-auth/react';
 import profCss from '../styles/profile.module.css';
 import NavBar from '@/components/NavBar';
 import { useRouter } from 'next/router';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { getServerSession } from 'next-auth';
 import Loading from '@/components/ui/Loading';
 import InputCard from '@/components/InputCard';
+import PageContext from '@/contexts/page-context';
+import NotificationContext from '@/contexts/notif-context';
+import Head from 'next/head';
 
 export default function Profile(props) {
     const [isChanging, setIsChanging] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const { showNotification } = useContext(NotificationContext);
+    const pageCtx = useContext(PageContext);
 
     const oldPasswordRef = useRef();
     const newPasswordRef = useRef();
@@ -30,6 +35,13 @@ export default function Profile(props) {
     const logoutHandler = () => {
         setIsLoading(true);
         signOut();
+
+        const notification = {
+            content: 'Logging you out!',
+            status: 'success'
+        }
+
+        showNotification(notification);
     }
 
     const passwordHandler = async () => {
@@ -47,14 +59,27 @@ export default function Profile(props) {
             })
         });
 
-        // if (!response.ok) {
-        //     const data = await response.json();
-        //     console.log(data.message);
-        // }
-
         const data = await response.json();
+        if (!response.ok) {
+            const notification = {
+                content: data.message,
+                status: 'error'
+            }
+
+            showNotification(notification);
+        }
+        else {
+            const notification = {
+                content: data.message,
+                status: 'success'
+            }
+
+            showNotification(notification);
+            setIsChanging(false);
+        }
+
         setIsLoading(false);
-        setIsChanging(false);
+
     }
 
     const cancelHandler = () => {
@@ -62,11 +87,12 @@ export default function Profile(props) {
     }
 
     useEffect(() => {
-        if (!session){
+        if (!session) {
             router.push('/');
         }
         else {
             setIsLoading(false);
+            pageCtx.setPageContext('');
         }
 
     }, [])
@@ -74,7 +100,13 @@ export default function Profile(props) {
     if (isLoading)
         return (
             <>
-                <NavBar />
+                <Head>
+                    <title>Profile</title>
+                    <meta name="description" content="User Profile for employee data" />
+                    <meta name="viewport" content="width=device-width, initial-scale=1" />
+                    <link rel="icon" href="/favicon.ico" />
+                </Head>
+
                 <div className={profCss.load_container}>
                     <Loading context='Making changes...' />
                 </div>
@@ -83,6 +115,13 @@ export default function Profile(props) {
 
     return (
         <>
+            <Head>
+                <title>Profile</title>
+                <meta name="description" content="User Profile for employee data" />
+                <meta name="viewport" content="width=device-width, initial-scale=1" />
+                <link rel="icon" href="/favicon.ico" />
+            </Head>
+
             <div className={profCss.main__container}>
                 <div className={profCss.sub__container}>
                     <h1 className={profCss.title}>Profile</h1>

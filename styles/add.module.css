@@ -12,7 +12,7 @@
   display: flex;
   width: 100%;
   justify-content: center;
-  margin-top: 10vh;
+  padding-top: 10rem;
   padding-bottom: 3vh;
 }
 
@@ -38,49 +38,49 @@
 }
 
 .input_name {
-    margin-left: 1vw;
-    height: 4vh;
-    width: 93%;
-    background-color: transparent;
-    border: none;
-    outline: none;
-    color: black;
-    font-size: 80%;
+  margin-left: 1vw;
+  height: 4vh;
+  width: 93%;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  color: black;
+  font-size: 80%;
 }
 
 .input_number {
-    margin-left: 1vw;
-    height: 4vh;
-    width: 93%;
-    background-color: transparent;
-    border: none;
-    outline: none;
-    color: black;
-    font-size: 80%;
+  margin-left: 1vw;
+  height: 4vh;
+  width: 93%;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  color: black;
+  font-size: 80%;
 }
 
 .input_date {
-    margin-left: 1vw;
-    height: 4vh;
-    width: 93%;
-    background-color: transparent;
-    border: none;
-    outline: none;
-    color: black;
-    font-size: 80%;
-    color-scheme: white;
+  margin-left: 1vw;
+  height: 4vh;
+  width: 93%;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  color: black;
+  font-size: 80%;
+  color-scheme: white;
 }
 
 .submit {
-    font-weight: 550;
-    font-size: 70%;
-    margin-top: 2vh;
-    width: 30%;
-    height: 4vh;
-    color: black;
-    background-color: rgb(241, 202, 154);
+  font-weight: 550;
+  font-size: 70%;
+  margin-top: 2vh;
+  width: 30%;
+  height: 4vh;
+  color: black;
+  background-color: rgb(241, 202, 154);
 }
 
 .submit:hover {
-    background-color: rgb(142, 216, 81);
+  background-color: rgb(142, 216, 81);
 }

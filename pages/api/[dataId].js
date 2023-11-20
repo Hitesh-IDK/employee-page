@@ -15,12 +15,7 @@ async function handler(req, res) {
                 })
             }
         }
-        // const filteredData = data.filter((item) => {
-        //     if (item.name.toLowerCase() !== dataId)
-        //         return item;
-        // })
 
-        // fs.writeFileSync(filePath, JSON.stringify(filteredData));
         res.status(200).json('Success!');
     }
     else {

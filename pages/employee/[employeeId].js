@@ -1,16 +1,19 @@
 import { useRouter } from 'next/router';
 import emplyCss from '../../styles/employee.module.css';
 import { buildDataPath, extractData } from '../api/data';
-import { useEffect, useState } from 'react';
-import NavBar from '@/components/NavBar';
+import { useContext, useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { connectToDatabase } from '@/helpers/auth/auth-db';
+import PageContext from '@/contexts/page-context';
+import NotificationContext from '@/contexts/notif-context';
 
 const EmployeeData = (props) => {
     const router = useRouter();
     const [dataExists, setDataExists] = useState();
     const [deleted, setDeleted] = useState(false);
     const { data: session } = useSession();
+    const pageCtx = useContext(PageContext);
+    const { showNotification } = useContext(NotificationContext);
 
     const data = props.data;
 
@@ -21,6 +24,8 @@ const EmployeeData = (props) => {
         else {
             setDataExists(true);
         }
+
+        pageCtx.setPageContext('');
     }, [data])
 
     const homeHandler = () => {
@@ -30,6 +35,12 @@ const EmployeeData = (props) => {
     const deleteHandler = async () => {
 
         if (!session) {
+            const notification = {
+                content: 'Login required to delete!',
+                status: 'error'
+            }
+
+            showNotification(notification);
             return;
         }
 
@@ -38,14 +49,27 @@ const EmployeeData = (props) => {
         })
 
         if (response.status === 200) {
-
             setDeleted(true);
+
+            const notification = {
+                content: 'Deleted Successfully',
+                status: 'success'
+            }
+
+            showNotification(notification);
+        }
+        else {
+            const notification = {
+                content: 'Something went wrong!',
+                status: 'error'
+            }
+
+            showNotification(notification);
         }
     }
 
     return (
         <>
-            <NavBar />
             <div className={emplyCss.main__container}>
                 <div className={emplyCss.sub__container}>
                     <h1 className={emplyCss.title}>Employee Data</h1>
@@ -99,8 +123,8 @@ export async function getServerSideProps(context) {
             let queryPlus;
 
             const employee = await queries.findOne({ id: i });
-            
-            if(employee) {
+
+            if (employee) {
                 queryPlus = employee.queryCount + 1;
                 await queries.updateOne({ id: i }, { $set: { name: data[i].name, queryCount: queryPlus } });
             }
@@ -115,7 +139,7 @@ export async function getServerSideProps(context) {
             }
 
             client.close();
-            
+
             return {
                 props: {
                     params: params,

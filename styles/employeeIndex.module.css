@@ -1,80 +1,42 @@
 .search_img {
-    width: 70px;
-    height: 70px;
+  width: 70px;
+  height: 70px;
 }
 
 .title_container {
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    height: 45vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  height: 20rem;
 }
 
 .title {
-    font-size: 350%;
-    padding-right: 1vw;
-    padding-left: 2vw;
-    font-family: var(--font-cabin);
-}
-
-.stats_container {
-    display: flex;
-    justify-content: center;
-    margin-top: 2vh;
-    font-size: 110%;
-}
-
-.stats__query {
-    font-size: 120%;
-    padding: 0px 0px 1vh 0px;
-    margin: 0px 0px 1vh 0px;
-    border-bottom: 3px solid rgb(110, 107, 107);
-}
-
-.stats__amount {
-    font-size: 120%;
-    padding: 0px 10px 1vh 0px;
-    margin: 0px 10px 1vh 10px;
-    border-bottom: 3px solid rgb(110, 107, 107);
-}
-
-.stats__count {
-    font-size: 120%;
-    padding: 0px 0px 1vh 0px;
-    margin: 0px 0px 1vh 0px;
-    border-bottom: 3px solid rgb(110, 107, 107);
-}
-
-.stats_each__container {
-    background-color: rgb(199, 199, 194, 0.7);
-    border-radius: 15px;
-    margin-right: 2vw;
-    padding: 18px 15px 18px 15px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    align-content: center;
+  font-size: 350%;
+  padding-right: 1vw;
+  padding-left: 2vw;
+  font-family: var(--font-cabin);
 }
 
 .search_container {
-    margin: 2vh 1vw 0px 0px;
-    display: flex;
-    justify-content: center;
+  margin: 2vh 1vw 0px 0px;
+  display: flex;
+  justify-content: center;
 }
 
 .search_bar {
-    display: flex;
-    background-color: rgba(255, 228, 196, 0.534);
-    width: 30vw;
-    height: 3.7vh;
-    border-radius: 10px;
+  display: flex;
+  background-color: #5c8984;
+  width: 30rem;
+  height: 4vh;
+  border-radius: 10px;
+  margin-bottom: 0.7rem;
 }
 
 .search_input {
-    background-color: transparent;
-    border: none;
-    width: 70%;
-    outline: none;
-    margin-left: 30px;
-    color: rgb(0, 0, 0);
+  background-color: transparent;
+  border: none;
+  width: 70%;
+  outline: none;
+  margin-left: 30px;
+  color: rgb(0, 0, 0);
 }

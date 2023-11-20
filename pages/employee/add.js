@@ -1,9 +1,11 @@
-import NavBar from "@/components/NavBar";
 import Head from "next/head";
 import addCss from '../../styles/add.module.css';
 import InputCard from "@/components/InputCard";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ToolTip from "@/components/ToolTip";
+import { useContext } from "react";
+import PageContext from "@/contexts/page-context";
+import NotificationContext from "@/contexts/notif-context";
 
 export default function Add() {
     const [isNameValid, setIsNameValid] = useState(true);
@@ -11,6 +13,8 @@ export default function Add() {
     const [inputName, setInputName] = useState('');
     const [inputSalary, setInputSalary] = useState('');
     const [inputDate, setInputDate] = useState('');
+    const pageCtx = useContext(PageContext);
+    const { showNotification } = useContext(NotificationContext);
 
     const validateForm = () => {
         let isValid = true;
@@ -47,7 +51,7 @@ export default function Add() {
         try {
             const response = await fetch('/api/data', {
                 method: 'POST',
-                body: JSON.stringify({ destination: 'hybrid', data: { ...inputData }}),
+                body: JSON.stringify({ destination: 'hybrid', data: { ...inputData } }),
                 headers: {
                     'Content-type': 'application/json'
                 }
@@ -57,8 +61,21 @@ export default function Add() {
                 setInputName('');
                 setInputDate('');
                 setInputSalary('');
+
+                const notification = {
+                    content: 'Employee Added Successfully!',
+                    status: 'success'
+                }
+
+                showNotification(notification);
             } else {
                 // Handle server-side errors or other non-successful responses
+                const notification = {
+                    content: 'Error on the server!',
+                    status: 'error'
+                }
+
+                showNotification(notification);
             }
         } catch (error) {
             // Handle network errors
@@ -79,6 +96,10 @@ export default function Add() {
         setInputDate(event.target.value);
     };
 
+    useEffect(() => {
+        pageCtx.setPageContext('addEmply');
+    }, []);
+
     return (
         <>
             <Head>
@@ -87,8 +108,6 @@ export default function Add() {
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-
-            <NavBar page='addEmply' />
 
             <div className={addCss.add__container}>
                 <div className={addCss.card}>
